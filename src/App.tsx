@@ -16,6 +16,7 @@ import { EmptyState } from './components/EmptyState';
 import { NoTransactionsState } from './components/NoTransactionsState';
 import { ErrorState } from './components/ErrorState';
 import { Footer } from './components/Footer';
+import { ApiKeyModal } from './components/ApiKeyModal';
 
 const STORAGE_KEY = 'chaintrack_recent_searches_v1';
 
@@ -28,6 +29,7 @@ export default function App() {
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [results, setResults] = useState<TransactionQueryResponse | null>(null);
   const [recentSearches, setRecentSearches] = useState<SearchHistoryItem[]>([]);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState<boolean>(false);
 
   // Load history from localStorage on initial render
   useEffect(() => {
@@ -54,7 +56,6 @@ export default function App() {
       };
 
       setRecentSearches((prev) => {
-        // Remove duplicate if exists
         const filtered = prev.filter(
           (item) => !(item.address.toLowerCase() === newItem.address.toLowerCase() && item.network === newItem.network)
         );
@@ -93,7 +94,6 @@ export default function App() {
     if (newNetwork === selectedNetwork) return;
 
     setSelectedNetwork(newNetwork);
-    // Clear old results to prevent mixing BSC and TRON results
     setResults(null);
     setHasSearched(false);
     setApiError(null);
@@ -162,7 +162,14 @@ export default function App() {
       />
 
       {/* Header */}
-      <Header selectedNetwork={selectedNetwork} />
+      <Header
+        selectedNetwork={selectedNetwork}
+        onKeysUpdated={() => {
+          if (walletAddress.trim()) {
+            executeSearch();
+          }
+        }}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -191,7 +198,11 @@ export default function App() {
         {isLoading && <LoadingSkeleton network={selectedNetwork} />}
 
         {!isLoading && apiError && (
-          <ErrorState message={apiError} onRetry={() => executeSearch()} />
+          <ErrorState
+            message={apiError}
+            onRetry={() => executeSearch()}
+            onOpenSettings={() => setIsApiKeyModalOpen(true)}
+          />
         )}
 
         {!isLoading && !apiError && hasSearched && results && results.transactions.length > 0 && (
@@ -216,6 +227,17 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* API Key Modal triggered from error */}
+      <ApiKeyModal
+        isOpen={isApiKeyModalOpen}
+        onClose={() => setIsApiKeyModalOpen(false)}
+        onSaved={() => {
+          if (walletAddress.trim()) {
+            executeSearch();
+          }
+        }}
+      />
 
       {/* Footer */}
       <Footer />
