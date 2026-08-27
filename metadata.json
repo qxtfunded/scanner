@@ -1,0 +1,6 @@
+{
+  "name": "ChainTrack",
+  "description": "Production-ready token transaction tracker for BEP-20 (BNB Smart Chain) and TRC-20 (TRON) wallet addresses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
