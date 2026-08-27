@@ -27,15 +27,31 @@ ChainTrack is a production-ready, dark-themed crypto analytics dashboard for tra
 
 ---
 
+## Vercel Deployment (1-Click / Frontend Only)
+
+This app is configured to deploy directly to **Vercel** with zero server configuration needed:
+
+1. Push or import this repository to your **GitHub** / **GitLab** account.
+2. In [Vercel](https://vercel.com/new), select **Import Project**.
+3. Framework Preset will auto-detect as **Vite** (Build Command: `vite build`, Output Directory: `dist`).
+4. (Optional) In **Environment Variables**, add:
+   - `VITE_BSCSCAN_API_KEY`: Your BscScan API Key
+   - `VITE_TRONGRID_API_KEY`: Your TronGrid API Key
+5. Click **Deploy**!
+
+---
+
 ## Environment Variables
 
-Configure environment variables in `.env` (refer to `.env.example`):
+Configure environment variables in `.env` or Vercel project settings:
 
 ```env
-# Optional/Recommended API key for BscScan / Etherscan V2 queries (get free at https://bscscan.com/myapikey)
-BSCSCAN_API_KEY=""
+# Frontend Client-Side Keys (for Vercel deployment)
+VITE_BSCSCAN_API_KEY=""
+VITE_TRONGRID_API_KEY=""
 
-# Optional API key for TronGrid queries (https://www.trongrid.io)
+# Server-Side Keys (for Node.js / Docker / Cloud Run deployment)
+BSCSCAN_API_KEY=""
 TRONGRID_API_KEY=""
 
 # Platform injection (optional)
